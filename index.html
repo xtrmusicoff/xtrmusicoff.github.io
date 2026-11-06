@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ready when you are</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <canvas id="grid" aria-hidden="true"></canvas>
+  <div class="sparks" id="sparks" aria-hidden="true"></div>
+
+  <section class="intro" id="intro">
+    <div class="logo-wrap">
+      <div class="orbit" aria-hidden="true"></div>
+      <img class="logo" src="images/logo_transparent.png" alt="10TR logo">
+    </div>
+    <p class="intro-text">10TR presents</p>
+  </section>
+
+  <main class="main" id="main">
+    <h1 class="title">
+      <span class="word" style="--i:0">Ready</span>
+      <span class="word" style="--i:1">when</span>
+      <span class="word accent" style="--i:2">you</span>
+      <span class="word accent" style="--i:3">are</span>
+    </h1>
+    <p class="subtitle">sample HTML page</p>
+    <button class="cta" id="cta" type="button" disabled>Click me</button>
+    <p class="message" id="message" aria-live="polite"></p>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

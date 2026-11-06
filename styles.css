@@ -1,0 +1,390 @@
+/* ---------- Fonts ---------- */
+@font-face { font-family: "Unbounded"; src: url("fonts/Unbounded-ExtraLight.ttf") format("truetype"); font-weight: 200; font-display: swap; }
+@font-face { font-family: "Unbounded"; src: url("fonts/Unbounded-Light.ttf") format("truetype"); font-weight: 300; font-display: swap; }
+@font-face { font-family: "Unbounded"; src: url("fonts/Unbounded-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Unbounded"; src: url("fonts/Unbounded-Medium.ttf") format("truetype"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Unbounded"; src: url("fonts/Unbounded-Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Unbounded"; src: url("fonts/Unbounded-Black.ttf") format("truetype"); font-weight: 900; font-display: swap; }
+
+/* ---------- Base ---------- */
+:root {
+  --bg: #0b0b0d;
+  --white: #FFFFFF;
+  --accent: #F54927;
+  --grey: #8b8b94;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+
+body {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--white);
+  font-family: "Unbounded", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Ambient background ---------- */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ambient::before,
+.ambient::after {
+  content: "";
+  position: absolute;
+  width: 60vmax;
+  height: 60vmax;
+  border-radius: 50%;
+  filter: blur(90px);
+}
+
+.ambient::before {
+  top: -25vmax;
+  left: -15vmax;
+  background: radial-gradient(circle, var(--accent), transparent 65%);
+  opacity: 0.2;
+  animation: drift-a 26s ease-in-out infinite alternate;
+}
+
+.ambient::after {
+  right: -15vmax;
+  bottom: -25vmax;
+  background: radial-gradient(circle, #3a3a55, transparent 65%);
+  opacity: 0.35;
+  animation: drift-b 32s ease-in-out infinite alternate;
+}
+
+@keyframes drift-a {
+  to { transform: translate(12vw, 8vh) scale(1.08); }
+}
+
+@keyframes drift-b {
+  to { transform: translate(-10vw, -6vh) scale(1.12); }
+}
+
+/* ---------- Dotted grid (canvas) ---------- */
+#grid {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ---------- Accent sparks ---------- */
+.sparks {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.spark {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  opacity: 0;
+  animation: spark var(--dur, 5s) ease-in-out infinite;
+}
+
+@keyframes spark {
+  0%   { opacity: 0; transform: translateY(0) scale(0.6); }
+  50%  { opacity: 0.85; }
+  100% { opacity: 0; transform: translateY(-30px) scale(1); }
+}
+
+/* ---------- Intro ---------- */
+.intro,
+.main {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.intro {
+  gap: 2.2rem;
+  transition: opacity 0.8s var(--ease);
+}
+
+.intro.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.logo-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.logo {
+  position: relative;
+  z-index: 1;
+  height: min(34vh, 300px);
+  width: auto;
+  opacity: 0;
+  filter: drop-shadow(0 0 30px rgba(245, 73, 39, 0.25));
+  animation: logo-in 1.2s var(--ease) forwards;
+}
+
+@keyframes logo-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Thin rotating orbit around the logo */
+.orbit {
+  --s: min(70vh, 90vw);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--s);
+  height: var(--s);
+  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  animation: spin 24s linear infinite;
+}
+
+.orbit::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.intro-text {
+  font-weight: 300;
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: intro-text 3.2s ease forwards;
+}
+
+@keyframes intro-text {
+  0%       { opacity: 0; }
+  25%, 65% { opacity: 1; }
+  100%     { opacity: 0; }
+}
+
+/* ---------- Main section ---------- */
+.main {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s var(--ease);
+}
+
+.main.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.title {
+  max-width: 10em;
+  font-size: clamp(2rem, 7vw, 4.6rem);
+  font-weight: 900;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+
+.word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.4em);
+  filter: blur(6px);
+  transition:
+    opacity 0.7s var(--ease),
+    transform 0.7s var(--ease),
+    filter 0.7s var(--ease);
+  transition-delay: calc(var(--i, 0) * 0.18s);
+}
+
+.title.is-shown .word {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.word.accent {
+  color: var(--accent);
+}
+
+.subtitle {
+  margin-top: 1.2rem;
+  color: var(--grey);
+  font-weight: 300;
+  font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.subtitle.is-shown {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Button ---------- */
+.cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin-top: 2.6rem;
+  padding: 1.05rem 2.6rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--white);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.7s var(--ease),
+    transform 0.45s var(--ease),
+    box-shadow 0.45s var(--ease),
+    filter 0.3s;
+}
+
+/* Sheen sweep */
+.cta::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  z-index: -1;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-20deg);
+}
+
+.cta.is-shown {
+  opacity: 1;
+  transform: none;
+}
+
+.cta:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px -6px rgba(245, 73, 39, 0.55);
+}
+
+.cta:hover:not(:disabled)::before {
+  left: 125%;
+  transition: left 0.8s var(--ease);
+}
+
+.cta:active:not(:disabled) {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 4px;
+}
+
+.cta:disabled {
+  cursor: default;
+  filter: saturate(0.6) brightness(0.85);
+}
+
+/* Click ripple */
+.ripple {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  transform: scale(0);
+  pointer-events: none;
+  animation: ripple 0.7s ease-out forwards;
+}
+
+@keyframes ripple {
+  to { transform: scale(22); opacity: 0; }
+}
+
+/* ---------- Messages ---------- */
+.message {
+  margin-top: 2rem;
+  min-height: 1.6em;
+  font-size: clamp(1rem, 2.4vw, 1.25rem);
+  font-weight: 400;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+}
+
+.message.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+
+  .ambient::before,
+  .ambient::after,
+  .orbit,
+  .spark {
+    animation: none !important;
+  }
+
+  .spark {
+    opacity: 0.35;
+  }
+
+  .logo {
+    animation: none;
+    opacity: 1;
+  }
+
+  .intro-text {
+    animation: none;
+    opacity: 1;
+  }
+}
